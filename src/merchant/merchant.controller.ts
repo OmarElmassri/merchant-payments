@@ -2,8 +2,9 @@ import { MerchantDto } from './../DTOs/merchant.dto';
 import { MerchantsPaginationDto } from './../DTOs/merchants-pagination.dto';
 import { MerchantService } from './merchant.service';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiBody, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Merchant APIs')
 @Controller('merchant')
 export class MerchantController {
   constructor(private merchantService: MerchantService) { }
@@ -47,7 +48,7 @@ export class MerchantController {
     return await this.merchantService.updateMerchant(merchantCode, merchantObject);
   }
 
-  // Delete Company
+  // Delete Merchant
   @ApiResponse({ status: 200, type: MerchantDto })
   @ApiParam({ name: 'code', required: true, example: 'MR_34086302' })
   @Delete(':code')
