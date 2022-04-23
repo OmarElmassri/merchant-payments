@@ -1,8 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, IsEmail } from "class-validator";
+import { IsNotEmpty, IsString, IsEmail, IsOptional } from "class-validator";
 
 export class MerchantDto {
   _id?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  code?: string;
 
   @ApiProperty()
   @IsNotEmpty({ message: `Merchant name is required` })

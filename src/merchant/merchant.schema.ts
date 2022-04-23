@@ -6,6 +6,9 @@ export type MerchantDocument = Merchant & Document;
 @Schema()
 export class Merchant {
   @Prop(String)
+  code: string;
+
+  @Prop(String)
   name: string;
 
   @Prop()
