@@ -8,7 +8,9 @@ Simple NestJS application containing two major modules Merchants and transaction
 
 # Online Demo
 
-[Merchant Transactions](https://omarelmassri.github.io/companies-portal/)
+[Merchant Transactions](https://merchant-payments.herokuapp.com/)
+
+[Swagger Docs](https://merchant-payments.herokuapp.com/api/)
 
 Service hosted on heroku. Database hosted on MongoDB Atlas. It may gives you at first error fetching or some delay because the heroku dyno on heroku sleeps after some time because it's free and this delay because it starting.
 
