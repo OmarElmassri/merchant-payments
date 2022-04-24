@@ -12,11 +12,7 @@ import 'dotenv/config';
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    ConfigModule.forRoot({
-      validationSchema: Joi.object({
-        EMAIL_SERVICE: Joi.string().required(),
-      })
-    }),
+    ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.ATLAS_URL),
     TransactionModule,
     MerchantModule],
