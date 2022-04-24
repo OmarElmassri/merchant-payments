@@ -4,10 +4,22 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TransactionModule } from './transaction/transaction.module';
 import { MerchantModule } from './merchant/merchant.module';
+import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
+import * as Joi from '@hapi/joi';
 import 'dotenv/config';
 
 @Module({
-  imports: [MongooseModule.forRoot(process.env.ATLAS_URL), TransactionModule, MerchantModule],
+  imports: [
+    ScheduleModule.forRoot(),
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        EMAIL_SERVICE: Joi.string().required(),
+      })
+    }),
+    MongooseModule.forRoot(process.env.ATLAS_URL),
+    TransactionModule,
+    MerchantModule],
   controllers: [AppController],
   providers: [AppService],
 })

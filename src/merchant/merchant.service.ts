@@ -1,3 +1,5 @@
+import { SchedulerRegistry, Cron } from '@nestjs/schedule';
+import { ConfigService } from '@nestjs/config';
 import { TransactionService } from './../transaction/transaction.service';
 import { TransactionDocument } from './../transaction/transaction.schema';
 import { TransactionDto } from './../DTOs/transaction.dto';
@@ -10,10 +12,29 @@ import { Model } from 'mongoose';
 import { plainToClass } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
 import { generateCode } from 'src/utils/helperFunctions';
+import Mail from 'nodemailer/lib/mailer';
+import { createTransport } from 'nodemailer';
 
 @Injectable()
 export class MerchantService {
-  constructor(@InjectModel('Merchant') private merchantModel: Model<MerchantDocument>, @InjectModel('Transaction') private transactionModel: Model<TransactionDocument>, private transactionService: TransactionService) { }
+  private nodemailerTransport: Mail;
+
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly schedulerRegistry: SchedulerRegistry,
+    @InjectModel('Merchant') private merchantModel: Model<MerchantDocument>,
+    @InjectModel('Transaction') private transactionModel: Model<TransactionDocument>,
+    private transactionService: TransactionService) {
+    this.nodemailerTransport = createTransport({
+      service: this.configService.get('EMAIL_SERVICE'),
+      auth: {
+        type: 'OAuth2',
+        user: this.configService.get('EMAIL_USER'),
+        clientId: this.configService.get('EMAIL_CLIENT_ID'),
+        clientSecret: this.configService.get('EMAIL_CLIENT_SECRET'),
+      }
+    });
+  }
 
   // List Merchants
   async listMerchants(keyword: string): Promise<MerchantsPaginationDto> {
@@ -56,8 +77,14 @@ export class MerchantService {
       // Create merchant instance
       const merchantInstance: MerchantDocument = new this.merchantModel({ code: generateCode('MR'), name, email });
 
+
       // Created merchant
-      return await merchantInstance.save();
+      const createdMerchant: MerchantDto = await merchantInstance.save();
+
+      // Schedule transaction email
+      // await this.scheduleEmail(createdMerchant.code);
+
+      return createdMerchant;
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -114,5 +141,40 @@ export class MerchantService {
     });
 
     return merchantObject as MerchantDto;
+  }
+
+  // Schedule email
+  // @Cron('* * 22 * * *') // this will be run everyday at 11 PM if enabled to send mails
+  async scheduleEmail() {
+    // Email content
+    let emailContent: string = '';
+
+    // Get merchants
+    const merchants: MerchantDto[] = await this.merchantModel.find();
+
+    // Maps to emalinig merchants
+    for (let i = 0; i < merchants.length; i++) {
+      const merchant: MerchantDto = merchants[i];
+
+      // Get merchant transactions
+      const transactions: TransactionDto[] = await this.transactionModel.find({ merchantId: merchant._id });
+
+      // Add transactions content
+      transactions.forEach(({ amount, currency, operation }: TransactionDto) => {
+        emailContent = `${emailContent} ${amount} ${currency} - ${operation}\n`;
+      })
+
+      // Schedule transaction email
+      this.sendMail({
+        to: merchant.email,
+        subject: 'Transactions',
+        text: emailContent
+      })
+    }
+  }
+
+  // Send email
+  sendMail(options: Mail.Options) {
+    return this.nodemailerTransport.sendMail(options);
   }
 }
