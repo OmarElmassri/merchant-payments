@@ -18,16 +18,16 @@ export class TransactionController {
   }
 
   // List Merchant transactions
-  @ApiParam({ name: 'merchant_code', required: true, example: 'MR_34086302' })
-  @ApiResponse({ status: 200, type: TransactionsPaginationDto })
+  @ApiParam({ name: 'merchant_code', required: true, example: 'MR_80328042' })
+  @ApiResponse({ status: 200, type: MerchantDto })
   @Get(':merchant_code')
-  async listMerchantTransactions(@Param('merchant_code') merchantCode: MerchantDto['code']): Promise<TransactionsPaginationDto> {
+  async listMerchantTransactions(@Param('merchant_code') merchantCode: MerchantDto['code']): Promise<MerchantDto> {
     return await this.transactionService.listMerchantTransactions(merchantCode);
   }
 
   // Create Transaction
   @ApiResponse({ status: 200, type: TransactionDto })
-  @ApiQuery({ name: 'merchant_code', required: true, example: 'MR_34086302' })
+  @ApiQuery({ name: 'merchant_code', required: true, example: 'MR_80328042' })
   @ApiBody({ type: TransactionDto })
   @Post('')
   async createTransaction(
@@ -39,7 +39,7 @@ export class TransactionController {
 
   // Update Transaction
   @ApiResponse({ status: 200, type: TransactionDto })
-  @ApiParam({ name: 'code', required: true, example: 'TR_34086302' })
+  @ApiParam({ name: 'code', required: true, example: 'TR_32792461' })
   @ApiBody({ type: TransactionDto })
   @Patch(':code')
   async updateTransaction(
@@ -50,7 +50,7 @@ export class TransactionController {
 
   // Delete Transaction
   @ApiResponse({ status: 200, type: TransactionDto })
-  @ApiParam({ name: 'code', required: true, example: 'TR_34086302' })
+  @ApiParam({ name: 'code', required: true, example: 'TR_32792461' })
   @Delete(':code')
   async deleteTransaction(@Param('code') transactionCode: TransactionDto['code']): Promise<TransactionDto> {
     return await this.transactionService.deleteTransaction(transactionCode);

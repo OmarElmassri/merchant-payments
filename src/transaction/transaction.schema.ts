@@ -1,4 +1,4 @@
-import { Merchant } from '../merchant/merchant.schema';
+import { Currency, Operation } from './../DTOs/enums.dto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Document } from 'mongoose';
@@ -14,13 +14,16 @@ export class Transaction {
   amount: number;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Merchant' })
-  merchantId: Merchant;
+  merchantId: string;
 
   @Prop({ enum: ['USD', 'EGP', 'EUR'] })
-  currency: string;
+  currency: Currency;
 
   @Prop({ enum: ['pay', 'refund'] })
-  operation: string;
+  operation: Operation;
+
+  @Prop({ type: Date, default: Date.now() })
+  created_at: Date
 }
 
 export const TransactionSchema = SchemaFactory.createForClass(Transaction);

@@ -20,7 +20,7 @@ export class MerchantController {
   }
 
   // Get Merchant
-  @ApiParam({ name: 'code', required: true, example: 'MR_34086302' })
+  @ApiParam({ name: 'code', required: true, example: 'MR_80328042' })
   @ApiResponse({ status: 200, type: MerchantDto })
   @Get(':code')
   async getMerchant(@Param('code') merchantCode: MerchantDto['code']): Promise<MerchantDto> {
@@ -39,7 +39,7 @@ export class MerchantController {
 
   // Update Comppany
   @ApiResponse({ status: 200, type: MerchantDto })
-  @ApiParam({ name: 'code', required: true, example: 'MR_34086302' })
+  @ApiParam({ name: 'code', required: true, example: 'MR_80328042' })
   @ApiBody({ type: MerchantDto })
   @Patch(':code')
   async updateMerchant(
@@ -50,7 +50,7 @@ export class MerchantController {
 
   // Delete Merchant
   @ApiResponse({ status: 200, type: MerchantDto })
-  @ApiParam({ name: 'code', required: true, example: 'MR_34086302' })
+  @ApiParam({ name: 'code', required: true, example: 'MR_80328042' })
   @Delete(':code')
   async deleteMerchant(@Param('code') merchantCode: MerchantDto['code']): Promise<MerchantDto> {
     return await this.merchantService.deleteMerchant(merchantCode);

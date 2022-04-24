@@ -1,7 +1,7 @@
 export enum Currency {
-  USD, EGP, EUR
+  USD = 'USD', EGP = 'EGP', EUR = 'EUR'
 }
 
 export enum Operation {
-  pay, refund
+  pay = 'pay', refund = 'refund'
 }
