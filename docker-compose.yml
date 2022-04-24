@@ -3,4 +3,5 @@ services:
   merchant-payments:
     container_name: merchant-payments
     image: merchant-payments:latest
+    env_file: .env
     network_mode: host
